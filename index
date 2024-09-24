@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elégedettségi kérdőív</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 10px;
+        }
+        .logo {
+            height: 30px;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .kerdes {
+            margin-bottom: 20px;
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3a7ab8;
+        }
+        .valasztott {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+        }
+        .valaszok {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .valasz {
+            text-align: center;
+            width: 22%;
+        }
+        .valasz img {
+            width: 50px;
+            height: 50px;
+        }
+        .valasz:hover img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="kepek/kifu.jpg" alt="KIFÜ logo" class="logo">
+    </header>
+    <main>
+        <h1>Elégedettségi kérdőív</h1>
+        <p>KIFÜ ügyfélbejelentés-kezelés</p>
+        <p>Köszönjük! Első választ rögzítettük. További visszajelzésével kérjük, segítse a munkánkat!</p>
+        
+        <div class="kerdes" data-kerdes="elegedettseg">
+            <p>Mennyire volt elégedett az ügyintézéssel?</p>
+            <div class="valaszok">
+                <div class="valasz" data-ertek="4"><img src="kepek/zold.png" alt="Nagyon elégedett"><p>Nagyon!</p></div>
+                <div class="valasz" data-ertek="3"><img src="kepek/citrom.png" alt="Inkább elégedett"><p>Inkább igen</p></div>
+                <div class="valasz" data-ertek="2"><img src="kepek/narancs.png" alt="Inkább nem elégedett"><p>Inkább nem</p></div>
+                <div class="valasz" data-ertek="1"><img src="kepek/piros.png" alt="Egyáltalán nem elégedett"><p>Egyáltalán nem</p></div>
+            </div>
+        </div>
+        
+        <div class="kerdes" data-kerdes="megoldas">
+            <p>Megfelelőnek találta a bejelentésére adott válaszunkat, megoldásunkat?</p>
+            <div class="valaszok">
+                <div class="valasz" data-ertek="4"><img src="kepek/zold.png" alt="Nagyon megfelelő"><p>Nagyon!</p></div>
+                <div class="valasz" data-ertek="3"><img src="kepek/citrom.png" alt="Inkább megfelelő"><p>Inkább igen</p></div>
+                <div class="valasz" data-ertek="2"><img src="kepek/narancs.png" alt="Inkább nem megfelelő"><p>Inkább nem</p></div>
+                <div class="valasz" data-ertek="1"><img src="kepek/piros.png" alt="Egyáltalán nem megfelelő"><p>Egyáltalán nem</p></div>
+            </div>
+        </div>
+        
+        <div class="kerdes" data-kerdes="segitokeszseg">
+            <p>Mennyire találta segítőkésznek ügyintézőnk hozzáállását?</p>
+            <div class="valaszok">
+                <div class="valasz" data-ertek="4"><img src="kepek/zold.png" alt="Nagyon segítőkész"><p>Nagyon!</p></div>
+                <div class="valasz" data-ertek="3"><img src="kepek/citrom.png" alt="Inkább segítőkész"><p>Inkább igen</p></div>
+                <div class="valasz" data-ertek="2"><img src="kepek/narancs.png" alt="Inkább nem segítőkész"><p>Inkább nem</p></div>
+                <div class="valasz" data-ertek="1"><img src="kepek/piros.png" alt="Egyáltalán nem segítőkész"><p>Egyáltalán nem</p></div>
+            </div>
+        </div>
+        
+        <div class="kerdes">
+            <p>Milyen egyéb észrevétele van az ügyintézéssel kapcsolatban?</p>
+            <textarea id="megjegyzesek"></textarea>
+        </div>
+
+        <button onclick="urlapotElkuldom()">Elküldöm</button>
+    </main>
+
+    <script>
+        let valasztottErtekek = {};
+
+        document.querySelectorAll('.valasz').forEach(valasz => {
+            valasz.addEventListener('click', function() {
+                const kerdes = this.closest('.kerdes').dataset.kerdes;
+                const ertek = this.dataset.ertek;
+                
+                this.closest('.valaszok').querySelectorAll('.valasz').forEach(opt => opt.classList.remove('valasztott'));
+                
+                this.classList.add('valasztott');
+                
+                valasztottErtekek[kerdes] = ertek;
+            });
+        });
+
+        function urlapotElkuldom() {
+            const email = "pank.gergo@gmail.com";
+            const megjegyzesek = document.getElementById('megjegyzesek').value;
+
+            if (Object.keys(valasztottErtekek).length < 3) {
+                alert('Kérjük, válaszoljon minden kérdésre!');
+                return;
+            }
+
+            const emailTartalom = `
+                Elégedettség: ${valasztottErtekek.elegedettseg}
+                Megoldás megfelelősége: ${valasztottErtekek.megoldas}
+                Ügyintéző segítőkészsége: ${valasztottErtekek.segitokeszseg}
+                Egyéb észrevételek: ${megjegyzesek}
+            `;
+
+            alert(`Az értékelés automatikusan elküldve a következő e-mail címre: ${email}\n\nTartalom:\n${emailTartalom}`);
+
+            valasztottErtekek = {};
+            document.querySelectorAll('.valasz').forEach(opt => opt.classList.remove('valasztott'));
+            document.getElementById('megjegyzesek').value = '';
+        }
+    </script>
+</body>
+</html>
